@@ -1,0 +1,10 @@
+# scratch scrape + analysis files (not part of the site)
+_rip/
+
+# local editor / OS junk
+.DS_Store
+Thumbs.db
+*.log
+
+# Claude Code local settings (keep launch.json, ignore machine-local settings)
+.claude/settings.local.json

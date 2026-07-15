@@ -1,0 +1,1031 @@
+/* ============================================================
+   Illumitati — custom layer on top of webflow.css
+   Fonts, CRT effects, window/lightbox behavior, upgrades.
+   ============================================================ */
+
+/* ---- Self-hosted fonts (no Google/WebFont.js dependency) ---- */
+@font-face {
+  font-family: "Press Start 2P";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("../fonts/PressStart2P.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Press Start 2P";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("../fonts/PressStart2P-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+/* ============================================================
+   CRT tube effects (ported from the Webflow page embeds)
+   ============================================================ */
+.awge-content {
+  animation: 3.4s ease-in-out 0s 1 normal none running turn-on;
+}
+
+@keyframes turn-on {
+  0%   { transform: scale(1, .8) translate3d(0, 0, 0); filter: brightness(1); opacity: 1; }
+  3.5% { transform: scale(1, .8) translate3d(0, 100%, 0); }
+  3.6% { transform: scale(1, .8) translate3d(0, -100%, 0); opacity: 1; }
+  9%   { transform: scale(1.3, .6) translate3d(0, 100%, 0); filter: brightness(1); opacity: 0; }
+  11%  { transform: scale(1, 1) translate3d(0, 0, 0); filter: contrast(0) brightness(1) saturate(1); opacity: 0; }
+  100% { transform: scale(1, 1) translate3d(0, 0, 0); filter: contrast(1.075) brightness(1) saturate(1.3); opacity: 1; }
+}
+
+@keyframes turn-off {
+  0%   { transform: scale(1, 1.3) translate3d(0, 0, 0); filter: brightness(1); opacity: 1; }
+  60%  { transform: scale(1.3, .001) translate3d(0, 0, 0); filter: brightness(2.5); }
+  100% {
+    animation-timing-function: cubic-bezier(.755, .05, .855, .06);
+    transform: scale(0, .0001) translate3d(0, 0, 0);
+    filter: brightness(2.5);
+    opacity: 0;
+  }
+}
+
+.awge-content.is-off {
+  animation: 0.55s cubic-bezier(.755, .05, .855, .06) 0s 1 normal forwards running turn-off;
+}
+
+.awge-tube-border,
+.awge-tube-border-copy { pointer-events: none !important; }
+
+.awge-tube-shape::after,
+.awge-tube-shape-copy::after {
+  content: ' ';
+  display: block;
+  position: absolute;
+  inset: 0;
+  background: rgba(18, 16, 16, 0.05);
+  opacity: 0;
+  z-index: 7;
+  pointer-events: none;
+  animation: flicker .5s infinite;
+}
+
+.awge-tube-shape::before,
+.awge-tube-shape-copy::before {
+  content: ' ';
+  display: block;
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, .25) 50%),
+    linear-gradient(90deg, rgba(255, 0, 0, .06), rgba(0, 255, 0, .02), rgba(0, 0, 255, .06));
+  z-index: 7;
+  background-size: 100% 2px, 3px 100%;
+  pointer-events: none;
+}
+
+@keyframes flicker {
+  0%   { opacity: 1.500; }
+  10%  { opacity: 1.604; }
+  20%  { opacity: 1.702; }
+  30%  { opacity: 1.612; }
+  40%  { opacity: 1.775; }
+  50%  { opacity: 1.616; }
+  60%  { opacity: 1.660; }
+  70%  { opacity: 1.879; }
+  80%  { opacity: 1.552; }
+  90%  { opacity: 1.786; }
+  100% { opacity: 1.682; }
+}
+
+.landing-copyright-text,
+.landing-start-arrow {
+  text-shadow: 3px 3px 4px #21285d, 0 0 16px rgba(191, 191, 191, .56);
+}
+
+/* ============================================================
+   Boot / login screen
+   ============================================================ */
+
+/* welcome text blinker */
+.text-block-3 { animation: blinker 1.2s step-end infinite; }
+@keyframes blinker { 50% { opacity: .25; } }
+
+/* background gif fade-in handled by JS adding .bg-on */
+.background { opacity: 0; transition: opacity 8s linear .8s; }
+.background.bg-on { opacity: .14; }
+
+/* loading bar element is animated from JS via transform transitions */
+.lblue { will-change: transform; }
+
+/* login accounts: gentle upgrade — pop on hover */
+.link-block, .link-block-3 { transition: transform .18s ease; }
+.link-block:hover, .link-block-3:hover { transform: scale(1.06); }
+.botton { cursor: pointer; transition: transform .15s ease, filter .15s ease; }
+.botton:hover { transform: translateY(-2px); filter: brightness(1.15); }
+
+/* screen-off overlay (Sleep / Shut Down) */
+.screen-off {
+  position: fixed;
+  /* cover the screen hole only — the iMac bezel (z-index 10) stays visible */
+  inset: 8% 6.2% 8.7% 6.3%;
+  z-index: 9;
+  /* elliptical radii approximate the tube's curved opening */
+  border-radius: 18% 18% 18% 18% / 9% 9% 9% 9%;
+  background: #000;
+  display: none;
+  cursor: pointer;
+}
+.screen-off.on { display: block; }
+.screen-off .hint {
+  position: absolute;
+  bottom: 8%;
+  width: 100%;
+  text-align: center;
+  color: #666;
+  font-family: Lucidagrande, Arial, sans-serif;
+  font-size: 13px;
+  animation: blinker 2.4s step-end infinite;
+}
+
+/* ============================================================
+   Desktop windows
+   ============================================================ */
+
+/* windows & icons get GPU-friendly dragging */
+.menu, .work, .contact, .browserui { will-change: transform; }
+.draggable2, .draggable3 { touch-action: none; cursor: grab; }
+/* only the drag handle blocks touch gestures — content inside can scroll on
+   touch (work grid, store, browser). Windows themselves must NOT set
+   touch-action:none or nothing inside them scrolls on a phone. */
+.home-navbar { touch-action: none; }
+.work-grid, .store, .div-block-25, .ff-views, .ff-view, .about-body, .contactwrap {
+  touch-action: pan-y;
+  -webkit-overflow-scrolling: touch;
+}
+.draggable2:active, .draggable3:active { cursor: grabbing; }
+
+/* window open/close scale animations (replaces Webflow IX2) */
+.win-anim-open  { animation: win-open  .25s cubic-bezier(.2, .9, .3, 1.2) both; }
+.win-anim-close { animation: win-close .22s cubic-bezier(.5, 0, .8, .4) both; }
+@keyframes win-open  { from { transform: scale(0); opacity: .4; } to { transform: scale(1); opacity: 1; } }
+@keyframes win-close { from { transform: scale(1); opacity: 1; } to { transform: scale(0); opacity: 0; } }
+
+/* title bars drag windows; red dot closes */
+.home-navbar { cursor: grab; user-select: none; }
+.home-navbar:active { cursor: grabbing; }
+.navsection img { cursor: pointer; }
+.navsection img:first-child { transition: filter .15s ease; }
+.navsection img:first-child:hover { filter: brightness(1.3) drop-shadow(0 0 2px rgba(255, 80, 80, .8)); }
+
+/* work-grid hover: classic Finder icon-view selection — the image lifts and
+   the label gets a subtle rounded blue highlight (no giant blue cell) */
+.cmswrap { background-color: transparent !important; }
+.cmswrap .image-8 { transition: transform .14s ease, box-shadow .14s ease; }
+.cmswrap:hover .image-8 { transform: scale(1.05); box-shadow: 4px 5px 7px rgba(0, 0, 0, .4); }
+.cms-text-highlight {
+  pointer-events: none;
+  padding: 1px 6px;
+  border-radius: 4px;
+  transition: background-color .12s ease, color .12s ease;
+}
+.cmswrap:hover .cms-text-highlight { background-color: rgba(56, 117, 215, .92); color: #fff; }
+
+/* product modal: contained INSIDE the firefox window (was position:fixed,
+   which covered the whole desktop), centered, sensibly sized */
+.store { position: relative; }
+/* card-content is positioned in Webflow, which trapped the modal in a tiny
+   box — clear it so the modal resolves to .store and fills the store area */
+.big-cats_card-content { position: static !important; }
+/* keep the modal (and everything) inside the window's rounded frame */
+.browser-container { overflow: hidden; }
+.big-cats_modal {
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 50 !important;
+  background: rgba(0, 0, 0, .55) !important;
+  padding: 16px !important;
+  overflow: hidden !important;
+  transition: opacity .2s ease;
+}
+.big-cats_modal-content {
+  position: relative !important;   /* was fixed → let the modal flex center it */
+  width: auto !important;
+  min-width: 0 !important;
+  max-width: 94% !important;
+  height: auto !important;
+  max-height: 92% !important;
+  margin: 0 !important;
+  padding: 1.6rem !important;
+  overflow: auto !important;
+  border-radius: 8px;
+  box-shadow: 0 14px 44px rgba(0, 0, 0, .6);
+}
+.div-block-24 { flex-wrap: wrap; align-items: flex-start; gap: 16px; }
+.big-cats_modal-image {
+  width: min(15rem, 40%) !important;
+  height: auto !important;
+  max-height: 46vh !important;
+  object-fit: contain !important;
+}
+.div-block-23 { flex: 1 1 220px; min-width: 0; }
+.big-cats_card { cursor: pointer; }
+
+/* store product hover */
+.big-cats_card img { transition: transform .25s ease; }
+.big-cats_card:hover img { transform: scale(1.02); }
+
+/* ============================================================
+   Lightbox (replaces Webflow lightbox)
+   ============================================================ */
+.ltb {
+  position: fixed;
+  inset: 0;
+  z-index: 20000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, .88);
+}
+.ltb.on { display: flex; }
+.ltb img {
+  max-width: 88vw;
+  max-height: 84vh;
+  box-shadow: 0 8px 60px rgba(0, 0, 0, .8);
+  animation: ltb-in .22s ease both;
+}
+@keyframes ltb-in { from { transform: scale(.92); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.ltb .ltb-caption {
+  position: absolute;
+  bottom: 4vh;
+  width: 100%;
+  text-align: center;
+  color: #ddd;
+  font-family: Lucidagrande, Arial, sans-serif;
+  font-size: 13px;
+  letter-spacing: .04em;
+}
+.ltb button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: 0;
+  color: #fff;
+  font-family: "Press Start 2P", monospace;
+  font-size: 26px;
+  padding: 20px;
+  cursor: pointer;
+  opacity: .7;
+  z-index: 2;
+}
+.ltb button:hover { opacity: 1; }
+.ltb .ltb-prev { left: 0; }
+.ltb .ltb-next { right: 0; }
+.ltb .ltb-x { top: 16px; right: 8px; transform: none; font-size: 18px; }
+
+/* ============================================================
+   Misc fixes for life outside Webflow
+   ============================================================ */
+
+/* form success/fail blocks start hidden (webflow.css relies on runtime) */
+.w-form-done, .w-form-fail { display: none; }
+.w-form-done.on, .w-form-fail.on { display: block; }
+
+/* shopify buy button mount inside the product modal */
+.buy-button > div[id^="product-component"] { display: block; }
+
+/* ============================================================
+   Classic Mac OS chrome: menu bar, dock, about + trash windows
+   ============================================================ */
+
+/* ---- menu bar (pinstriped, Lucida Grande, always on top) ---- */
+.os-menubar {
+  /* extends from the very top of the page down past the bezel's glass recess.
+     The top is a straight rectangle (hidden behind the iMac bezel, so no gap
+     is ever possible); only the BOTTOM edge is a barrel curve tracking the
+     tube. --floor = center bottom of the visible band, --dip = edge extra. */
+  --dip: 3vh;
+  --floor: 13vh;
+  position: absolute;
+  top: 0;
+  left: 6.2%;
+  right: 6%;
+  height: 17vh;
+  clip-path: polygon(0% 0, 100% 0, 100% calc(var(--floor) + var(--dip) * 1), 93.75% calc(var(--floor) + var(--dip) * 0.7656), 87.5% calc(var(--floor) + var(--dip) * 0.5625), 81.25% calc(var(--floor) + var(--dip) * 0.3906), 75% calc(var(--floor) + var(--dip) * 0.25), 68.75% calc(var(--floor) + var(--dip) * 0.1406), 62.5% calc(var(--floor) + var(--dip) * 0.0625), 56.25% calc(var(--floor) + var(--dip) * 0.0156), 50% calc(var(--floor) + var(--dip) * 0), 43.75% calc(var(--floor) + var(--dip) * 0.0156), 37.5% calc(var(--floor) + var(--dip) * 0.0625), 31.25% calc(var(--floor) + var(--dip) * 0.1406), 25% calc(var(--floor) + var(--dip) * 0.25), 18.75% calc(var(--floor) + var(--dip) * 0.3906), 12.5% calc(var(--floor) + var(--dip) * 0.5625), 6.25% calc(var(--floor) + var(--dip) * 0.7656), 0% calc(var(--floor) + var(--dip) * 1));
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, .35));
+  z-index: 6;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 8.3vh 3.5% 0;
+  font-family: Lucidagrande, "Helvetica Neue", Arial, sans-serif;
+  font-size: 13px;
+  color: #111;
+  background: repeating-linear-gradient(#fdfdfd 0 2px, #ececec 2px 4px);
+  user-select: none;
+}
+/* padding-top vertically centers the text within the visible curved band
+   (band = bezel recess ~8.15vh down to --floor) */
+.os-menubar { padding-top: 8.85vh; }
+.os-menu-left, .os-menu-right { display: flex; align-items: flex-start; }
+.os-menu-item {
+  display: flex;
+  align-items: center;
+  height: 25px;
+  margin-top: 3px;
+  padding: 0 10px;
+  border-radius: 4px;
+  cursor: default;
+  position: relative;
+  white-space: nowrap;
+  will-change: transform;
+}
+.os-menu-item[data-open]:hover, .os-menu-btn:hover, .os-menu-btn.open,
+.os-apple:hover, .os-apple.open {
+  background: #3875d7;
+  color: #fff;
+}
+.os-menu-app { font-weight: bold; }
+/* rotation pivots from the text baseline center so tilts read cleanly */
+.os-menu-item { transform-origin: 50% 60%; }
+.os-apple-logo { width: 16px; height: 16px; image-rendering: auto; }
+.os-battery svg { display: block; }
+.os-clock { font-variant-numeric: tabular-nums; }
+
+/* apple dropdown */
+.os-dropdown {
+  display: none;
+  position: fixed;  /* JS sets left/top from the apple item's rect */
+  font-family: Lucidagrande, "Helvetica Neue", Arial, sans-serif;
+  font-size: 13px;
+  min-width: 210px;
+  padding: 4px 0;
+  background: rgba(248, 248, 248, .96);
+  border: 1px solid #9a9a9a;
+  border-top: none;
+  border-radius: 0 0 6px 6px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .35);
+  color: #111;
+  z-index: 6;
+}
+.os-dropdown.open { display: block; }
+.os-drop-item { padding: 4px 18px; cursor: default; }
+.os-drop-item:hover { background: #3875d7; color: #fff; }
+.os-drop-sep { height: 1px; margin: 4px 1px; background: #c8c8c8; }
+
+/* ---- dock (translucent shelf, magnify on hover) ---- */
+.os-dock {
+  position: absolute;
+  bottom: 11%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 6;
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  height: 56px;
+  padding: 6px 14px 5px;
+  background: rgba(255, 255, 255, .28);
+  border: 1px solid rgba(255, 255, 255, .45);
+  border-radius: 14px 14px 22px 22px / 14px 14px 30px 30px;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+.dock-item {
+  display: block;
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  transition: width .16s ease, height .16s ease, margin .16s ease;
+}
+.dock-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, .45));
+}
+.dock-item:hover { width: 60px; height: 60px; margin: 0 4px; }
+.dock-item:active img { filter: brightness(.6); }
+.dock-sep { width: 1px; align-self: stretch; margin: 4px 4px; background: rgba(0, 0, 0, .35); }
+
+/* ---- desktop icon selection (classic highlight) ---- */
+.draggable2.selected .div-block-9 img,
+.draggable3.selected .div-block-9 img { filter: brightness(.55) saturate(1.4); }
+.draggable2.selected .text-block-8,
+.draggable3.selected .text-block-8 { background: #3875d7; color: #fff; border-radius: 3px; }
+
+/* ---- trash wiki window ---- */
+.wikiwin {
+  pointer-events: auto;
+  position: absolute;
+  z-index: 2;
+  top: 17%;
+  left: 16%;
+  width: 68%;
+  max-width: 980px;
+  will-change: transform;
+}
+.wiki-container { background: #ececec; border-radius: 6px; box-shadow: 0 12px 40px rgba(0,0,0,.45); overflow: hidden; }
+.wiki-body { height: 56vh; background: #fff; }
+.wiki-body iframe { width: 100%; height: 100%; border: 0; display: block; }
+
+/* ---- about window ---- */
+.aboutwin {
+  pointer-events: auto;
+  position: absolute;
+  z-index: 2;
+  top: 20%;
+  left: 50%;
+  margin-left: -190px;
+  width: 380px;
+  will-change: transform;
+}
+.about-container { background: #ececec; border-radius: 6px; box-shadow: 0 12px 40px rgba(0,0,0,.45); overflow: hidden; }
+.about-body {
+  padding: 26px 26px 30px;
+  text-align: center;
+  font-family: Lucidagrande, Arial, sans-serif;
+  color: #222;
+  background: repeating-linear-gradient(#fff 0 2px, #f3f3f3 2px 4px);
+}
+.about-logo { width: 120px; margin-bottom: 12px; }
+.about-title { font-family: Newyorkextralarge, Lucidagrande, serif; font-size: 26px; margin-bottom: 4px; }
+.about-line { font-size: 12px; line-height: 1.9; }
+.about-sep { height: 1px; background: #c9c9c9; margin: 12px 30px; }
+
+/* mobile: hide dock + slim the menubar; imacborderM has shallower bezels */
+@media (max-width: 767px) {
+  /* ---- ONE mobile breakpoint: Webflow hides desktop icons only at ≤479 but
+     shows mobile content at ≤767, so 480-767 showed BOTH. Hide the desktop
+     icons + desktop window layer here so only the mobile tree renders. ---- */
+  .browser, .folder, .minecraft, .trash, .home-content { display: none !important; }
+  .home-content-mobile { display: flex !important; background: transparent !important; }
+
+  /* ---- keep the portrait iMac bezel (imacborderM) framing the screen ---- */
+  .awge-tube-border {
+    display: block !important;
+    background-image: url("../assets/imacborderM.png") !important;
+    background-size: 100% 100% !important;
+    background-repeat: no-repeat !important;
+    background-position: center !important;
+  }
+  /* wallpaper inside the frame (Webflow blanks it to flat gray) */
+  .awge-tube-shape {
+    background-image: url("../assets/Untitled-2.jpg") !important;
+    background-size: cover !important;
+    background-position: 50% 20% !important;
+    background-color: #0a0e18 !important;
+  }
+  .background-copy {
+    background: linear-gradient(rgba(0, 0, 0, .22), rgba(0, 0, 0, .38)) !important;
+    z-index: 1 !important;
+    pointer-events: none;
+  }
+  .home-content-mobile .text-block-8 {
+    color: #fff !important;
+    font-size: 13px !important;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, .95), 0 0 3px rgba(0, 0, 0, .8) !important;
+  }
+
+  /* ---- menu bar: same curved band as desktop, fitted to the portrait bezel
+     recess (top ~8%, curves to ~9.8% at the edges). Keeps the base clip-path;
+     tucks up behind the bezel so there's no gap. ---- */
+  .os-menubar {
+    --dip: 1.9vh;      /* recess-top curve depth (8% → ~9.8%) */
+    --floor: 11vh;     /* center bottom of the visible band */
+    position: absolute;
+    top: 0; left: 6.4%; right: 6.4%;
+    height: 14vh;
+    padding: 8.2vh 5% 0 !important;   /* vertically center text in the band */
+    align-items: flex-start;
+    font-size: 11px;
+    border-bottom: none;
+  }
+  .os-menubar .os-menu-item { height: 22px; margin-top: 0; padding: 0 5px; }
+  .os-menu-left .os-menu-item#os-file-menu { display: none; }   /* only drop File */
+  .os-battery { display: none; }                                 /* keep volume + clock */
+  .os-apple-logo { width: 14px; height: 14px; }
+
+  /* ---- dock: back, at the bottom of the bezel recess ---- */
+  .os-dock {
+    display: flex !important;
+    position: absolute;
+    bottom: 10%; left: 50%;
+    transform: translateX(-50%);
+    height: 46px;
+    gap: 3px;
+    padding: 5px 8px 4px;
+  }
+  .os-dock .dock-item { width: 34px; height: 34px; }
+  .os-dock .dock-item:hover { width: 40px; height: 40px; }
+
+  /* Sleep/Shut-Down black screen covers just the recess */
+  .screen-off { inset: 8% 6.2% 8.7% 6.4% !important; border-radius: 14px !important; }
+
+  /* ---- desktop icons: column inside the recess (vh/vw so they track the
+     bezel at any window size), evenly spaced above the dock ---- */
+  .browser-copy { padding: 13vh 0 0 11vw !important; }
+  .folder-copy  { padding: 26vh 0 0 11vw !important; }
+  .mc           { padding: 39vh 0 0 11vw !important; }
+  .trash-copy   { padding: 52vh 0 0 11vw !important; }
+  .browser-copy, .folder-copy, .mc, .trash-copy { inset: 0 !important; }
+
+  /* ---- windows: centered inside the recess, sized to fit ---- */
+  .home-content-mobile .menu,
+  .home-content-mobile .work,
+  .home-content-mobile .contact,
+  .home-content-mobile .browserui {
+    left: 8vw !important;
+    top: 13% !important;
+    margin: 0 !important;
+  }
+  .home-container, .home-container-copy, .browser-container, .contact-contaner {
+    width: 84vw !important; max-width: 84vw !important;
+  }
+  .home-container, .home-container-copy { height: 66vh !important; }
+  .browser-container { height: 68vh !important; max-height: 68vh !important; }
+
+  .wikiwin { top: 13% !important; left: 8vw !important; width: 84vw !important; }
+  .wiki-body { height: 54vh; }
+  .aboutwin { top: 15% !important; left: 10vw !important; width: 80vw !important; max-width: none; margin-left: 0 !important; }
+}
+
+/* ============================================================
+   Layering: keep every window/menubar under the CRT glass
+   (scanline pseudo-elements at z-index 7 on the tube shape)
+   ============================================================ */
+main.awge-content {
+  position: relative;
+  z-index: 1;
+  isolation: isolate;
+}
+
+/* product detail modal above the menu bar */
+
+/* chrome fades in as the CRT settles (turn-on runs ~3.4s) */
+@keyframes chrome-in { from { opacity: 0; } to { opacity: 1; } }
+.os-menubar, .os-dock { animation: chrome-in .9s ease 2.6s both; }
+
+/* ============================================================
+   Traffic lights: red = close, yellow = minimize, green = zoom
+   (Clear.png dots colorized via filters)
+   ============================================================ */
+.navsection img { transition: filter .15s ease; }
+.navsection img:nth-child(2) { filter: sepia(1) saturate(6) hue-rotate(-10deg) brightness(1.08); }
+.navsection img:nth-child(3) { filter: sepia(1) saturate(5) hue-rotate(55deg) brightness(1.02); }
+.navsection img:nth-child(2):hover { filter: sepia(1) saturate(7) hue-rotate(-10deg) brightness(1.25); }
+.navsection img:nth-child(3):hover { filter: sepia(1) saturate(6) hue-rotate(55deg) brightness(1.2); }
+
+/* minimized-window chips in the dock */
+.dock-minimized { display: flex; align-items: flex-end; gap: 6px; }
+.dock-minimized:empty { display: none; }
+.dock-minimized .dock-item img { border-radius: 4px; background: rgba(255,255,255,.5); }
+
+/* window resize grip (classic bottom-right corner lines) */
+.win-resizer {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 20px;
+  height: 20px;
+  cursor: nwse-resize;
+  pointer-events: auto;
+  z-index: 5;
+  background: repeating-linear-gradient(135deg, transparent 0 4px, rgba(0,0,0,.35) 4px 5px);
+  border-bottom-right-radius: 6px;
+  touch-action: none;
+}
+
+/* smooth zoom (green button) */
+.win-zoom-anim { transition: width .25s ease, height .25s ease; }
+
+/* wiki & about windows: flex columns so their bodies follow window resizing */
+.wiki-container { display: flex; flex-direction: column; position: relative; }
+.wiki-body { flex: 1 1 56vh; min-height: 0; height: auto; }
+.about-container { display: flex; flex-direction: column; position: relative; }
+.about-body { flex: 1 1 auto; min-height: 0; overflow: auto; }
+
+/* ============================================================
+   "Old Mac" immersion pass
+   ============================================================ */
+
+/* ---- pixel-art cursors (original artwork) ---- */
+body, .page-wrapper {
+  cursor: url("../assets/cursor-arrow.png") 2 2, auto;
+}
+a, button, .dock-item, .os-drop-item, .os-menu-item[data-open],
+.botton, .link-block, .link-block-3, .cmswrap, .big-cats_card,
+.home-options-item, .navsection img, .cancel, .submit {
+  cursor: url("../assets/cursor-hand.png") 12 2, pointer;
+}
+.home-navbar, .home-navbar:active,
+.draggable2, .draggable2:active, .draggable3, .draggable3:active {
+  cursor: url("../assets/cursor-arrow.png") 2 2, auto;
+}
+
+/* ---- focused vs background windows (classic inactive chrome) ---- */
+.menu .home-navbar, .work .home-navbar, .contact .home-navbar,
+.browserui .home-navbar, .wikiwin .home-navbar, .aboutwin .home-navbar {
+  transition: filter .2s ease;
+}
+.menu:not(.win-front) .home-navbar,
+.work:not(.win-front) .home-navbar,
+.contact:not(.win-front) .home-navbar,
+.browserui:not(.win-front) .home-navbar,
+.wikiwin:not(.win-front) .home-navbar,
+.aboutwin:not(.win-front) .home-navbar {
+  filter: grayscale(1) brightness(1.06) contrast(.92);
+}
+.menu:not(.win-front) .navsection img,
+.work:not(.win-front) .navsection img,
+.contact:not(.win-front) .navsection img,
+.browserui:not(.win-front) .navsection img,
+.wikiwin:not(.win-front) .navsection img,
+.aboutwin:not(.win-front) .navsection img {
+  filter: grayscale(1) opacity(.55) !important;
+}
+
+/* ---- menu bar aqua gloss over the pinstripes ---- */
+.os-menubar::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(rgba(255, 255, 255, .75), rgba(255, 255, 255, 0) 45%, rgba(0, 0, 0, .06) 100%);
+  pointer-events: none;
+}
+.os-menu-item { z-index: 1; }
+
+/* ---- dock: 3D shelf + launch bounce ---- */
+.os-dock {
+  background: linear-gradient(rgba(255, 255, 255, .5), rgba(255, 255, 255, .18) 55%, rgba(255, 255, 255, .34));
+  border-top: 1px solid rgba(255, 255, 255, .8);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, .35), inset 0 -6px 10px -6px rgba(0, 0, 0, .25);
+}
+@keyframes dock-bounce {
+  0%, 100% { transform: translateY(0); }
+  30%      { transform: translateY(-26px); }
+  55%      { transform: translateY(0); }
+  72%      { transform: translateY(-12px); }
+  88%      { transform: translateY(0); }
+}
+.dock-item.bounce { animation: dock-bounce .7s ease; }
+
+/* ---- breathing sleep LED (the classic dozing-Mac pulse) ---- */
+.sleep-led {
+  position: absolute;
+  bottom: 3.5%;
+  left: 50%;
+  width: 10px;
+  height: 10px;
+  margin-left: -5px;
+  border-radius: 50%;
+  background: #fff;
+  animation: led-breathe 3.4s ease-in-out infinite;
+}
+@keyframes led-breathe {
+  0%, 100% { opacity: .08; box-shadow: 0 0 4px 1px rgba(255, 255, 255, .1); }
+  50%      { opacity: .95; box-shadow: 0 0 18px 5px rgba(255, 255, 255, .55); }
+}
+
+/* ---- aqua gel scrollbars on window content ---- */
+.work-grid::-webkit-scrollbar, .store::-webkit-scrollbar,
+.about-body::-webkit-scrollbar, .big-cats_modal-content::-webkit-scrollbar {
+  width: 14px;
+  height: 14px;
+}
+.work-grid::-webkit-scrollbar-track, .store::-webkit-scrollbar-track,
+.about-body::-webkit-scrollbar-track, .big-cats_modal-content::-webkit-scrollbar-track {
+  background: repeating-linear-gradient(90deg, #e8e8e8 0 2px, #f6f6f6 2px 4px);
+  border-left: 1px solid #c6c6c6;
+}
+.work-grid::-webkit-scrollbar-thumb, .store::-webkit-scrollbar-thumb,
+.about-body::-webkit-scrollbar-thumb, .big-cats_modal-content::-webkit-scrollbar-thumb {
+  border-radius: 8px;
+  background:
+    radial-gradient(closest-side at 35% 30%, rgba(255, 255, 255, .9), rgba(255, 255, 255, 0) 70%),
+    linear-gradient(90deg, #7db9e8 0%, #2f7cd6 45%, #1a5db3 100%);
+  border: 2px solid transparent;
+  background-clip: padding-box, padding-box;
+  box-shadow: inset 0 0 3px rgba(0, 40, 90, .5);
+}
+
+/* window borders: give containers the classic sunken edge */
+.home-container, .home-container-copy, .browser-container,
+.contact-contaner, .wiki-container, .about-container {
+  box-shadow: 0 10px 34px rgba(0, 0, 0, .5), 0 0 0 1px rgba(0, 0, 0, .35);
+}
+
+/* ============================================================
+   firefox window: real tabbed browsing
+   ============================================================ */
+.ff-tabs {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 30px;
+  padding: 4px 6px 0;
+  background: linear-gradient(#d8d8d8, #c3c3c3);
+  border-bottom: 1px solid #9a9a9a;
+  pointer-events: auto;
+}
+.ff-tabbar {
+  display: flex;
+  gap: 2px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  flex: 1;
+  min-width: 0;
+  align-items: flex-end;
+}
+.ff-tabbar::-webkit-scrollbar { display: none; }
+.ff-tab {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 26px;
+  padding: 0 9px;
+  max-width: 170px;
+  min-width: 60px;
+  border: 1px solid #999;
+  border-bottom: none;
+  border-radius: 7px 7px 0 0;
+  background: linear-gradient(#cfcfcf, #bdbdbd);
+  font-family: Lucidagrande, Arial, sans-serif;
+  font-size: 11px;
+  color: #333;
+  flex: 0 1 auto;
+  user-select: none;
+}
+.ff-tab.active {
+  background: linear-gradient(#fdfdfd, #ececec);
+  color: #111;
+  height: 27px;
+}
+.ff-fav { width: 14px; height: 14px; object-fit: contain; flex: none; }
+.ff-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ff-close {
+  flex: none;
+  width: 14px;
+  height: 14px;
+  line-height: 13px;
+  text-align: center;
+  border-radius: 50%;
+  font-size: 12px;
+  color: #666;
+}
+.ff-close:hover { background: #b33; color: #fff; }
+.ff-newtab {
+  flex: none;
+  width: 24px;
+  height: 24px;
+  margin: 0 0 2px 4px;
+  border: 1px solid #999;
+  border-radius: 5px;
+  background: linear-gradient(#eee, #d5d5d5);
+  font-size: 15px;
+  line-height: 1;
+  color: #444;
+}
+.ff-newtab:hover { background: #fff; }
+.ff-spin {
+  width: 12px;
+  height: 12px;
+  flex: none;
+  border: 2px solid #9bb9dd;
+  border-top-color: #2f66b0;
+  border-radius: 50%;
+  animation: ff-spin .7s linear infinite;
+}
+@keyframes ff-spin { to { transform: rotate(360deg); } }
+
+/* stacked views fill the window body */
+.ff-views {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  background: #fff;
+  pointer-events: auto;
+}
+.ff-view { position: absolute; inset: 0; display: none; overflow: auto; }
+.ff-view.ff-active { display: block; }
+.ff-frame { width: 100%; height: 100%; border: 0; display: block; }
+
+/* start page */
+.ff-start {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  padding: 30px 20px;
+  background: repeating-linear-gradient(#fff 0 2px, #f2f2f6 2px 4px);
+  font-family: Lucidagrande, Arial, sans-serif;
+}
+.ff-start-logo { width: 190px; max-width: 60%; }
+.ff-start-search { display: flex; gap: 6px; width: min(420px, 88%); }
+.ff-start-search input {
+  flex: 1;
+  padding: 7px 12px;
+  border: 1px solid #9a9a9a;
+  border-radius: 14px;
+  font: 13px Lucidagrande, Arial, sans-serif;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, .18);
+}
+.ff-start-search button, .ff-btn {
+  padding: 6px 16px;
+  border: 1px solid #8a8a8a;
+  border-radius: 14px;
+  background: linear-gradient(#fff, #dcdcdc);
+  font: bold 12px Lucidagrande, Arial, sans-serif;
+  color: #222;
+}
+.ff-start-search button:hover, .ff-btn:hover { background: linear-gradient(#fff, #cfe0f7); }
+.ff-start-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(110px, 150px));
+  gap: 10px;
+}
+.ff-quick {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+  padding: 13px 8px;
+  border: 1px solid #c2c2c2;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, .8);
+  font: 11px Lucidagrande, Arial, sans-serif;
+  color: #333;
+}
+.ff-quick:hover { border-color: #3875d7; background: #eef4ff; }
+.ff-quick img { width: 26px; height: 26px; object-fit: contain; }
+.ff-start-tip { font-size: 10.5px; color: #888; max-width: 400px; text-align: center; }
+
+/* embed-refused error page */
+.ff-error {
+  min-height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: repeating-linear-gradient(#fff 0 2px, #f2f2f6 2px 4px);
+}
+.ff-error-box {
+  max-width: 420px;
+  margin: 20px;
+  padding: 26px 30px;
+  border: 1px solid #9a9a9a;
+  border-radius: 10px;
+  background: #fdfdfd;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, .25);
+  text-align: center;
+  font-family: Lucidagrande, Arial, sans-serif;
+}
+.ff-error-icon { font-size: 34px; margin-bottom: 8px; }
+.ff-error-title { font-weight: bold; font-size: 15px; margin-bottom: 6px; }
+.ff-error-text { font-size: 12px; color: #555; margin-bottom: 16px; }
+.ff-error-actions { display: flex; gap: 8px; justify-content: center; }
+
+/* ============================================================
+   Responsive windows — keep every shell inside the tube screen
+   at any viewport size (originals used fixed vw/px + big min-width)
+   ============================================================ */
+.work, .contact, .browserui, .menu { max-width: 88vw; }
+/* these two originals opened partly off-screen on smaller windows */
+.contact { margin-left: 12vw; margin-bottom: 12vh; }
+.work { padding-right: 24px; }
+
+.home-container, .home-container-copy, .browser-container, .contact-contaner {
+  box-sizing: border-box;
+  min-width: 0;
+  width: min(82vw, 760px);
+  max-width: 86vw;
+}
+.home-container, .home-container-copy { height: min(68vh, 600px); min-height: 240px; }
+.browser-container { width: min(85vw, 780px); height: min(70vh, 600px); max-height: 74vh; }
+.contact-contaner { width: min(80vw, 560px); height: auto; max-height: 72vh; }
+
+/* inner scroll areas must flex, not force the window taller */
+.work-grid { min-height: 0; }
+
+/* browser internals stay contained */
+.ff-tabs { flex-wrap: nowrap; }
+.ff-views { min-height: 0; }
+
+@media (max-width: 991px) {
+  .home-container, .home-container-copy, .browser-container { width: 84vw; }
+  .contact { margin-left: 8vw; }
+}
+@media (max-width: 767px) {
+  .work, .contact, .browserui { max-width: 94vw; }
+  .contact { margin-left: 4vw; margin-bottom: 8vh; }
+  .home-container, .home-container-copy, .browser-container, .contact-contaner {
+    width: 90vw; max-width: 92vw;
+  }
+}
+
+/* ============================================================
+   Mobile robustness pass
+   ============================================================ */
+html, body { height: 100%; margin: 0; }
+
+@media (max-width: 767px) {
+  /* The CRT boot squish (scale 1,.8 → 1,1) can stall on mobile browsers and
+     leave the screen collapsed. Skip it on phones — show full-size at once.
+     The scanline / flicker CRT effects stay. */
+  .awge-content { animation: none !important; transform: none !important; }
+
+  /* image "Preview" windows: fill most of the phone screen, centered */
+  .img-window-container { min-width: 60vw; }
+  .img-window-body { max-height: 60vh; }
+
+  /* product modal: comfortable on a narrow screen */
+  .big-cats_modal-content { max-width: 96% !important; padding: 1rem !important; }
+  .div-block-24 { flex-direction: column; }
+  .big-cats_modal-image { width: min(60%, 200px) !important; max-height: 34vh !important; }
+
+  /* browser tab strip stays usable */
+  .ff-tab { max-width: 130px; }
+}
+
+/* floating "open externally" escape hatch on framed pages */
+.ff-external {
+  position: absolute;
+  bottom: 10px;
+  right: 12px;
+  z-index: 5;
+  padding: 5px 11px;
+  border: 1px solid #8a8a8a;
+  border-radius: 13px;
+  background: linear-gradient(rgba(255,255,255,.96), rgba(230,230,230,.96));
+  font: 11px Lucidagrande, Arial, sans-serif;
+  color: #222;
+  box-shadow: 0 2px 6px rgba(0,0,0,.3);
+  opacity: .5;
+  transition: opacity .15s ease;
+  cursor: pointer;
+}
+.ff-external:hover { opacity: 1; background: linear-gradient(#fff, #cfe0f7); }
+
+/* ============================================================
+   Window title truncation — never wrap/overflow the title bar
+   ============================================================ */
+.navsection2 { min-width: 0; }
+.text-block-7 {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+/* ---- contact window: footer flush to the bottom (no dead gap) ---- */
+.contact-contaner { display: flex; flex-direction: column; }
+.contact-contaner .contactwrap { flex: 1 1 auto; min-height: 0; }
+.menufooter { flex: 0 0 auto; }
+
+/* ============================================================
+   Work images open as draggable "Preview" windows (Mac-style)
+   ============================================================ */
+.img-window {
+  position: absolute;
+  z-index: 2;
+  pointer-events: auto;
+  will-change: transform;
+}
+.img-window-container {
+  display: flex;
+  flex-direction: column;
+  min-width: 240px;
+  min-height: 160px;
+  background: #dcdcdc;
+  border-radius: 7px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, .5), 0 0 0 1px rgba(0, 0, 0, .35);
+  overflow: hidden;
+  position: relative;
+}
+.img-window-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background:
+    repeating-conic-gradient(#cfcfcf 0% 25%, #e6e6e6 0% 50%) 50% / 20px 20px;  /* checkerboard mat */
+  overflow: hidden;
+}
+.img-window-body img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  display: block;
+}
+/* background image windows dim their title like the built-ins */
+.img-window:not(.win-front) .home-navbar { filter: grayscale(1) brightness(1.06) contrast(.92); }
+.img-window:not(.win-front) .navsection img { filter: grayscale(1) opacity(.55) !important; }
+
+/* iframe site window (Minecraft on mobile) */
+.site-window-body { flex: 1 1 auto; min-height: 0; background: #000; overflow: hidden; }
+.site-window-body iframe { width: 100%; height: 100%; border: 0; display: block; }
