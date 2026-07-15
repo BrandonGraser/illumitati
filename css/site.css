@@ -331,7 +331,7 @@
 .os-menu-left, .os-menu-right { display: flex; align-items: flex-start; }
 /* desktop icons (store / my work / minecraft / trash) — 15% smaller.
    Does NOT affect the dock/taskbar icons (those use .dock-item img). */
-.image-7 { width: 59.5px !important; }
+.image-7 { width: 56.5px !important; }
 
 .os-menu-item {
   display: flex;
@@ -532,10 +532,10 @@
 
   /* ---- desktop icons: column inside the recess (vh/vw so they track the
      bezel at any window size), evenly spaced above the dock ---- */
-  .browser-copy { padding: 13vh 0 0 11vw !important; }
-  .folder-copy  { padding: 26vh 0 0 11vw !important; }
-  .mc           { padding: 39vh 0 0 11vw !important; }
-  .trash-copy   { padding: 52vh 0 0 11vw !important; }
+  .browser-copy { padding: 16vh 0 0 11vw !important; }
+  .folder-copy  { padding: 29vh 0 0 11vw !important; }
+  .mc           { padding: 42vh 0 0 11vw !important; }
+  .trash-copy   { padding: 55vh 0 0 11vw !important; }
   .browser-copy, .folder-copy, .mc, .trash-copy { inset: 0 !important; }
 
   /* ---- windows: centered inside the recess, sized to fit ---- */
