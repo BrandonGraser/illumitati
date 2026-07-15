@@ -110,6 +110,9 @@
 .text-block-3 { color: #000; opacity: 1; }
 @keyframes blinker { 50% { opacity: .25; } }
 
+/* boot screen background: classic Mac blue (was white), like the original */
+.landing-content { background-color: #4068a8 !important; }
+
 /* background gif fade-in handled by JS adding .bg-on */
 .background { opacity: 0; transition: opacity 8s linear .8s; }
 .background.bg-on { opacity: .14; }
