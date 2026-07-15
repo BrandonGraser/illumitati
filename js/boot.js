@@ -83,31 +83,7 @@
     content.style.animation = '';
   }
 
-  /* soft synthesized startup chord when picking an account (user gesture,
-     so autoplay rules allow it) — then continue to the desktop */
-  var workLink = document.querySelector('.link-block');
-  if (workLink) {
-    workLink.addEventListener('click', function (e) {
-      e.preventDefault();
-      try {
-        var ctx = new (window.AudioContext || window.webkitAudioContext)();
-        var gain = ctx.createGain();
-        gain.gain.setValueAtTime(0.0001, ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.18, ctx.currentTime + 0.04);
-        gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 1.1);
-        gain.connect(ctx.destination);
-        [185, 233.08, 277.18, 369.99].forEach(function (f) {   /* F#2 chord-ish */
-          var o = ctx.createOscillator();
-          o.type = 'triangle';
-          o.frequency.value = f;
-          o.connect(gain);
-          o.start();
-          o.stop(ctx.currentTime + 1.15);
-        });
-      } catch (_) {}
-      setTimeout(function () { location.href = workLink.getAttribute('href'); }, 650);
-    });
-  }
+  /* the Work account link navigates straight to the desktop (no sound) */
 
   var sleepBtn = document.getElementById('btn-sleep');
   var shutBtn  = document.getElementById('btn-shutdown');

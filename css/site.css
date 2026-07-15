@@ -464,6 +464,14 @@
 .about-line { font-size: 12px; line-height: 1.9; }
 .about-sep { height: 1px; background: #c9c9c9; margin: 12px 30px; }
 
+/* desktop wallpaper: the silver "IG SAFE" figure. The mobile @media block
+   below overrides this back to the green figure (Untitled-2.jpg). */
+.awge-tube-shape {
+  background-image: url("../assets/IG-SAFE-1.jpg");
+  background-size: cover;
+  background-position: 50% 35%;
+}
+
 /* mobile: hide dock + slim the menubar; imacborderM has shallower bezels */
 @media (max-width: 767px) {
   /* ---- ONE mobile breakpoint: Webflow hides desktop icons only at ≤479 but
