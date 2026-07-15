@@ -113,6 +113,13 @@
 /* boot screen background: classic Mac blue (was white), like the original */
 .landing-content { background-color: #4068a8 !important; }
 
+/* windows scroll VERTICALLY only — never a horizontal scrollbar */
+.work-grid, .store, .about-body, .big-cats_modal-content, .ff-view,
+.home-options-container, .contactwrap, .div-block-25 {
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+}
+
 /* background gif fade-in handled by JS adding .bg-on */
 .background { opacity: 0; transition: opacity 8s linear .8s; }
 .background.bg-on { opacity: .14; }
@@ -221,7 +228,8 @@
   max-height: 92% !important;
   margin: 0 !important;
   padding: 1.6rem !important;
-  overflow: auto !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
   border-radius: 8px;
   box-shadow: 0 14px 44px rgba(0, 0, 0, .6);
 }
