@@ -528,7 +528,7 @@
     });
 
     var container = win.querySelector('.img-window-container');
-    var w = isMobile() ? innerWidth * 0.88 : Math.min(innerWidth * 0.9, 900);
+    var w = isMobile() ? innerWidth * 0.8 : Math.min(innerWidth * 0.9, 900);
     var h = isMobile() ? innerHeight * 0.6 : Math.min(innerHeight * 0.78, 640);
     container.style.width = w + 'px';
     container.style.height = h + 'px';

@@ -504,7 +504,7 @@
     position: absolute;
     top: 0; left: 6.4%; right: 6.4%;
     height: 14vh;
-    padding: 8.2vh 5% 0 !important;   /* vertically center text in the band */
+    padding: 7.6vh 5% 0 !important;   /* nudge text up a bit to center in the band */
     align-items: flex-start;
     font-size: 11px;
     border-bottom: none;
@@ -550,7 +550,7 @@
   .home-content-mobile .work,
   .home-content-mobile .contact,
   .home-content-mobile .browserui,
-  .wikiwin, .aboutwin {
+  .aboutwin {
     left: 50% !important;
     top: 50dvh !important;
     margin: 0 !important;
@@ -563,14 +563,24 @@
   .home-container, .home-container-copy { height: 55dvh !important; max-height: 55dvh !important; }
   .browser-container { height: 60dvh !important; max-height: 60dvh !important; }
 
-  .wikiwin { width: 81vw !important; }
-  .wikiwin .wiki-container { height: 62dvh !important; }
+  /* wiki window centers via left/top + fixed height — NOT transform, because
+     iOS Safari renders iframes blank inside a transformed ancestor */
+  .wikiwin {
+    left: 9.5vw !important;
+    top: 17dvh !important;
+    right: auto !important; bottom: auto !important;
+    width: 81vw !important;
+    height: 66dvh !important;
+    margin: 0 !important;
+    transform: none !important;
+  }
+  .wikiwin .wiki-container { height: 100% !important; }
   .wiki-body { flex: 1 1 auto !important; height: auto !important; }
   .aboutwin { width: 77vw !important; max-width: none; margin-left: 0 !important; }
 
   /* dynamic iframe / image windows: cap on phones */
-  .site-window .img-window-container { max-width: 90vw; max-height: 64dvh; }
-  .img-window-container { max-width: 90vw; max-height: 64dvh; }
+  .site-window .img-window-container { max-width: 82vw; max-height: 64dvh; }
+  .img-window-container { max-width: 88vw; max-height: 64dvh; }
 }
 
 /* ============================================================
