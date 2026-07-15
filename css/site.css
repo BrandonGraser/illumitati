@@ -166,8 +166,10 @@
 /* window open/close scale animations (replaces Webflow IX2) */
 .win-anim-open  { animation: win-open  .25s cubic-bezier(.2, .9, .3, 1.2) both; }
 .win-anim-close { animation: win-close .22s cubic-bezier(.5, 0, .8, .4) both; }
-@keyframes win-open  { from { transform: scale(0); opacity: .4; } to { transform: scale(1); opacity: 1; } }
-@keyframes win-close { from { transform: scale(1); opacity: 1; } to { transform: scale(0); opacity: 0; } }
+/* use the `scale` property (not transform: scale) so window centering can
+   own `transform` and dragging can own `translate` — all three compose */
+@keyframes win-open  { from { scale: 0; opacity: .4; } to { scale: 1; opacity: 1; } }
+@keyframes win-close { from { scale: 1; opacity: 1; } to { scale: 0; opacity: 0; } }
 
 /* title bars drag windows; red dot closes */
 .home-navbar { cursor: grab; user-select: none; }
@@ -540,28 +542,35 @@
   /* Heights use dvh (dynamic viewport height) so they track the VISIBLE area
      on iOS/Android — plain vh ignores the browser toolbars and the windows
      clip off the bottom. Kept short so they always sit above the dock. */
+  /* centered vertically + horizontally in the visible viewport. top:50dvh is
+     the middle of the visible area; transform centers the window's own box on
+     it (drag uses `translate`, the open anim uses `scale`, so `transform` is
+     free for this). */
   .home-content-mobile .menu,
   .home-content-mobile .work,
   .home-content-mobile .contact,
-  .home-content-mobile .browserui {
-    left: 13vw !important;
-    top: 12% !important;
+  .home-content-mobile .browserui,
+  .wikiwin, .aboutwin {
+    left: 50% !important;
+    top: 50dvh !important;
     margin: 0 !important;
+    padding: 0 !important;   /* clear webflow/responsive offsets so centering is exact */
+    transform: translate(-50%, -50%);
   }
   .home-container, .home-container-copy, .browser-container, .contact-contaner {
-    width: 74vw !important; max-width: 74vw !important;
+    width: 81vw !important; max-width: 81vw !important;
   }
-  .home-container, .home-container-copy { height: 46dvh !important; max-height: 46dvh !important; }
-  .browser-container { height: 50dvh !important; max-height: 50dvh !important; }
+  .home-container, .home-container-copy { height: 55dvh !important; max-height: 55dvh !important; }
+  .browser-container { height: 60dvh !important; max-height: 60dvh !important; }
 
-  .wikiwin { top: 12% !important; left: 13vw !important; width: 74vw !important; }
-  .wikiwin .wiki-container { height: 52dvh !important; }
+  .wikiwin { width: 81vw !important; }
+  .wikiwin .wiki-container { height: 62dvh !important; }
   .wiki-body { flex: 1 1 auto !important; height: auto !important; }
-  .aboutwin { top: 14% !important; left: 15vw !important; width: 70vw !important; max-width: none; margin-left: 0 !important; }
+  .aboutwin { width: 77vw !important; max-width: none; margin-left: 0 !important; }
 
-  /* dynamic iframe / image windows: cap smaller on phones */
-  .site-window .img-window-container { max-width: 82vw; max-height: 54dvh; }
-  .img-window-container { max-width: 82vw; max-height: 54dvh; }
+  /* dynamic iframe / image windows: cap on phones */
+  .site-window .img-window-container { max-width: 90vw; max-height: 64dvh; }
+  .img-window-container { max-width: 90vw; max-height: 64dvh; }
 }
 
 /* ============================================================

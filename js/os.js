@@ -469,17 +469,22 @@
     function place() {
       var natW = bodyImg.naturalWidth || 640, natH = bodyImg.naturalHeight || 460;
       var navH = 34;
-      var maxW = innerWidth * (isMobile() ? 0.8 : 0.7);
-      var maxH = innerHeight * (isMobile() ? 0.5 : 0.66);
+      var maxW = innerWidth * (isMobile() ? 0.88 : 0.7);
+      var maxH = innerHeight * (isMobile() ? 0.6 : 0.66);
       var scale = Math.min(1, maxW / natW, maxH / natH);
       var w = Math.max(240, Math.round(natW * scale));
       var h = Math.round(natH * scale) + navH;
       container.style.width = w + 'px';
       container.style.height = h + 'px';
-      /* cascade each new window down-right from a top-centered start */
-      var off = (imgWinCount++ % 6) * 26;
-      win.style.left = Math.round(Math.max(innerWidth * 0.06, (innerWidth - w) / 2) + off) + 'px';
-      win.style.top = Math.round(innerHeight * 0.14 + off) + 'px';
+      if (isMobile()) {               /* centered on phones */
+        win.style.left = Math.round((innerWidth - w) / 2) + 'px';
+        win.style.top = Math.round((innerHeight - h) / 2) + 'px';
+      } else {
+        /* cascade each new window down-right from a top-centered start */
+        var off = (imgWinCount++ % 6) * 26;
+        win.style.left = Math.round(Math.max(innerWidth * 0.06, (innerWidth - w) / 2) + off) + 'px';
+        win.style.top = Math.round(innerHeight * 0.14 + off) + 'px';
+      }
     }
     if (bodyImg.complete && bodyImg.naturalWidth) place();
     else bodyImg.addEventListener('load', place, { once: true });
@@ -523,13 +528,18 @@
     });
 
     var container = win.querySelector('.img-window-container');
-    var w = isMobile() ? innerWidth * 0.8 : Math.min(innerWidth * 0.9, 900);
-    var h = isMobile() ? innerHeight * 0.5 : Math.min(innerHeight * 0.78, 640);
+    var w = isMobile() ? innerWidth * 0.88 : Math.min(innerWidth * 0.9, 900);
+    var h = isMobile() ? innerHeight * 0.6 : Math.min(innerHeight * 0.78, 640);
     container.style.width = w + 'px';
     container.style.height = h + 'px';
-    var off = (siteWinCount++ % 5) * 22;
-    win.style.left = Math.round(Math.max(innerWidth * 0.05, (innerWidth - w) / 2) + off) + 'px';
-    win.style.top = Math.round(innerHeight * (isMobile() ? 0.13 : 0.12) + off) + 'px';
+    if (isMobile()) {                 /* centered on phones */
+      win.style.left = Math.round((innerWidth - w) / 2) + 'px';
+      win.style.top = Math.round((innerHeight - h) / 2) + 'px';
+    } else {
+      var off = (siteWinCount++ % 5) * 22;
+      win.style.left = Math.round(Math.max(innerWidth * 0.05, (innerWidth - w) / 2) + off) + 'px';
+      win.style.top = Math.round(innerHeight * 0.12 + off) + 'px';
+    }
 
     bringToFront(win);
     win.classList.add('win-anim-open');
