@@ -537,19 +537,23 @@
   .home-content-mobile .work,
   .home-content-mobile .contact,
   .home-content-mobile .browserui {
-    left: 8vw !important;
-    top: 13% !important;
+    left: 13vw !important;
+    top: 14% !important;
     margin: 0 !important;
   }
   .home-container, .home-container-copy, .browser-container, .contact-contaner {
-    width: 84vw !important; max-width: 84vw !important;
+    width: 74vw !important; max-width: 74vw !important;
   }
-  .home-container, .home-container-copy { height: 66vh !important; }
-  .browser-container { height: 68vh !important; max-height: 68vh !important; }
+  .home-container, .home-container-copy { height: 56vh !important; }
+  .browser-container { height: 58vh !important; max-height: 58vh !important; }
 
-  .wikiwin { top: 13% !important; left: 8vw !important; width: 84vw !important; }
-  .wiki-body { height: 54vh; }
-  .aboutwin { top: 15% !important; left: 10vw !important; width: 80vw !important; max-width: none; margin-left: 0 !important; }
+  .wikiwin { top: 14% !important; left: 13vw !important; width: 74vw !important; }
+  .wiki-body { height: 44vh; }
+  .aboutwin { top: 16% !important; left: 15vw !important; width: 70vw !important; max-width: none; margin-left: 0 !important; }
+
+  /* dynamic iframe / image windows: cap smaller on phones */
+  .site-window .img-window-container { max-width: 82vw; }
+  .img-window-container { max-width: 82vw; max-height: 62vh; }
 }
 
 /* ============================================================
