@@ -327,12 +327,16 @@
    (band = bezel recess ~8.15vh down to --floor) */
 .os-menubar { padding-top: 8.85vh; }
 .os-menu-left, .os-menu-right { display: flex; align-items: flex-start; }
+/* desktop icons (store / my work / minecraft / trash) — 15% smaller.
+   Does NOT affect the dock/taskbar icons (those use .dock-item img). */
+.image-7 { width: 59.5px !important; }
+
 .os-menu-item {
   display: flex;
   align-items: center;
   height: 25px;
   margin-top: 3px;
-  padding: 0 10px;
+  padding: 0 14px;
   border-radius: 4px;
   cursor: default;
   position: relative;
@@ -503,7 +507,7 @@
     font-size: 11px;
     border-bottom: none;
   }
-  .os-menubar .os-menu-item { height: 22px; margin-top: 0; padding: 0 5px; }
+  .os-menubar .os-menu-item { height: 22px; margin-top: 0; padding: 0 9px; }
   .os-menu-left .os-menu-item#os-file-menu { display: none; }   /* only drop File */
   .os-battery { display: none; }                                 /* keep volume + clock */
   .os-apple-logo { width: 14px; height: 14px; }
