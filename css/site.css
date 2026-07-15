@@ -533,27 +533,31 @@
   .browser-copy, .folder-copy, .mc, .trash-copy { inset: 0 !important; }
 
   /* ---- windows: centered inside the recess, sized to fit ---- */
+  /* Heights use dvh (dynamic viewport height) so they track the VISIBLE area
+     on iOS/Android — plain vh ignores the browser toolbars and the windows
+     clip off the bottom. Kept short so they always sit above the dock. */
   .home-content-mobile .menu,
   .home-content-mobile .work,
   .home-content-mobile .contact,
   .home-content-mobile .browserui {
     left: 13vw !important;
-    top: 14% !important;
+    top: 12% !important;
     margin: 0 !important;
   }
   .home-container, .home-container-copy, .browser-container, .contact-contaner {
     width: 74vw !important; max-width: 74vw !important;
   }
-  .home-container, .home-container-copy { height: 56vh !important; }
-  .browser-container { height: 58vh !important; max-height: 58vh !important; }
+  .home-container, .home-container-copy { height: 46dvh !important; max-height: 46dvh !important; }
+  .browser-container { height: 50dvh !important; max-height: 50dvh !important; }
 
-  .wikiwin { top: 14% !important; left: 13vw !important; width: 74vw !important; }
-  .wiki-body { height: 44vh; }
-  .aboutwin { top: 16% !important; left: 15vw !important; width: 70vw !important; max-width: none; margin-left: 0 !important; }
+  .wikiwin { top: 12% !important; left: 13vw !important; width: 74vw !important; }
+  .wikiwin .wiki-container { height: 52dvh !important; }
+  .wiki-body { flex: 1 1 auto !important; height: auto !important; }
+  .aboutwin { top: 14% !important; left: 15vw !important; width: 70vw !important; max-width: none; margin-left: 0 !important; }
 
   /* dynamic iframe / image windows: cap smaller on phones */
-  .site-window .img-window-container { max-width: 82vw; }
-  .img-window-container { max-width: 82vw; max-height: 62vh; }
+  .site-window .img-window-container { max-width: 82vw; max-height: 54dvh; }
+  .img-window-container { max-width: 82vw; max-height: 54dvh; }
 }
 
 /* ============================================================

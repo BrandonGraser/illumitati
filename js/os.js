@@ -470,7 +470,7 @@
       var natW = bodyImg.naturalWidth || 640, natH = bodyImg.naturalHeight || 460;
       var navH = 34;
       var maxW = innerWidth * (isMobile() ? 0.8 : 0.7);
-      var maxH = innerHeight * (isMobile() ? 0.54 : 0.66);
+      var maxH = innerHeight * (isMobile() ? 0.5 : 0.66);
       var scale = Math.min(1, maxW / natW, maxH / natH);
       var w = Math.max(240, Math.round(natW * scale));
       var h = Math.round(natH * scale) + navH;
@@ -524,7 +524,7 @@
 
     var container = win.querySelector('.img-window-container');
     var w = isMobile() ? innerWidth * 0.8 : Math.min(innerWidth * 0.9, 900);
-    var h = isMobile() ? innerHeight * 0.58 : Math.min(innerHeight * 0.78, 640);
+    var h = isMobile() ? innerHeight * 0.5 : Math.min(innerHeight * 0.78, 640);
     container.style.width = w + 'px';
     container.style.height = h + 'px';
     var off = (siteWinCount++ % 5) * 22;
