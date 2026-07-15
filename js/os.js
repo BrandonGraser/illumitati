@@ -707,6 +707,18 @@
     }
   }
 
+  /* position a dropdown so its top flap tucks UP behind the menu bar (which
+     sits above it at a higher z-index), filling the gap the curved bottom
+     used to leave. Items are padded down so they clear the bar. */
+  function tuckDropdown(drop, trigger) {
+    var r = trigger.getBoundingClientRect();
+    var bar = document.getElementById('os-menubar');
+    var barBottom = bar ? bar.getBoundingClientRect().bottom : r.bottom;
+    drop.style.left = Math.round(r.left) + 'px';
+    drop.style.top = Math.round(r.top) + 'px';
+    drop.style.paddingTop = Math.max(4, Math.round(barBottom - r.top)) + 'px';
+  }
+
   /* wire a menu-bar item to its dropdown (Finder, File, …) */
   function wireMenu(triggerId, dropId) {
     var trigger = document.getElementById(triggerId);
@@ -717,9 +729,7 @@
       var willOpen = !drop.classList.contains('open');
       closeAllDropdowns();                 /* only one menu open at a time */
       if (willOpen) {
-        var fr = trigger.getBoundingClientRect();
-        drop.style.left = Math.round(fr.left) + 'px';
-        drop.style.top = Math.round(fr.bottom + 4) + 'px';
+        tuckDropdown(drop, trigger);
         trigger.classList.add('open');
       }
       drop.classList.toggle('open', willOpen);
@@ -750,10 +760,7 @@
       var willOpen = !dropdown.classList.contains('open');
       closeAllDropdowns();                 /* only one menu open at a time */
       if (willOpen) {
-        /* anchor flush under the apple item (its rect includes the curve shift) */
-        var a = apple.getBoundingClientRect();
-        dropdown.style.left = Math.round(a.left) + 'px';
-        dropdown.style.top = Math.round(a.bottom + 4) + 'px';
+        tuckDropdown(dropdown, apple);
       }
       dropdown.classList.toggle('open', willOpen);
       apple.classList.toggle('open', willOpen);

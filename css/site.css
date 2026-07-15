@@ -106,7 +106,8 @@
    ============================================================ */
 
 /* welcome text blinker */
-.text-block-3 { animation: blinker 1.2s step-end infinite; }
+/* boot "Welcome to Illumitati." — steady black, no flashing */
+.text-block-3 { color: #000; opacity: 1; }
 @keyframes blinker { 50% { opacity: .25; } }
 
 /* background gif fade-in handled by JS adding .bg-on */
@@ -371,7 +372,9 @@
   border-radius: 0 0 6px 6px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, .35);
   color: #111;
-  z-index: 6;
+  /* below the menu bar (z6) so its curved bottom sits over the dropdown's top
+     flap, hiding the gap the bend used to leave */
+  z-index: 5;
 }
 .os-dropdown.open { display: block; }
 .os-drop-item { padding: 4px 18px; cursor: default; }
@@ -577,6 +580,11 @@
   .wikiwin .wiki-container { height: 100% !important; }
   .wiki-body { flex: 1 1 auto !important; height: auto !important; }
   .aboutwin { width: 77vw !important; max-width: none; margin-left: 0 !important; }
+
+  /* window titles: smaller + truncate so long names (image files, "About This
+     Computer") don't overrun the traffic-light buttons; shrink the buttons too */
+  .text-block-7 { font-size: 12.5px !important; }
+  .navsection img { width: 22px !important; }
 
   /* dynamic iframe / image windows: cap on phones */
   .site-window .img-window-container { max-width: 82vw; max-height: 64dvh; }
